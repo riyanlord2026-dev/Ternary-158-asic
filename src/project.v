@@ -1,6 +1,6 @@
 `default_nettype none
 
-module tt_um_example (
+module tt_um_riyanlord2026-dev_ternary_158 (
     input  wire [7:0] ui_in,    // Dedicated inputs (Your 8-bit Activations)
     output wire [7:0] uo_out,   // Dedicated outputs (Top 8 bits of Accumulator)
     input  wire [7:0] uio_in,   // IO Pads: Input path (uio_in[1:0] is Weight)
