@@ -9,7 +9,7 @@ project:
   tiles:        "1x1"
   top_module:   "tt_um_riyanlord2026_dev_ternary_158" # Replace with your actual repository top-module name if modified
   source_files:
-    - "src/project.v"
+    - "project.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
