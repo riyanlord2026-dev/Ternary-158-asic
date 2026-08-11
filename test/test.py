@@ -6,7 +6,7 @@ async def test_project(dut):
     dut._log.info("Starting Ternary-158 Core Silicon Verification Test")
 
     # 1. Turn on the physical power and ground pins for the gate-level simulation
-    # This prevents the simulation from crashing at 0.00ns
+    # This prevents the simulator from shutting down prematurely at 0.00ns
     if hasattr(dut, "VPWR"):
         dut.VPWR.value = 1
     if hasattr(dut, "VGND"):
