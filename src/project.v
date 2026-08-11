@@ -11,35 +11,32 @@ module tt_um_riyanlord2026_dev_ternary_158 (
     input  wire       rst_n     // Active-low reset from factory
 );
 
-    // 1. Convert active-low reset to active-high internal reset
     wire alu_reset;
     assign alu_reset = !rst_n;
 
-    // 2. Correct Sign Extension targeting the 7th bit of ui_in explicitly
-    wire [31:0] ext_act;
-    assign ext_act = {{24{ui_in[7]}}, ui_in};
+    // 1. Perform 8-bit Sign Extension to 16 bits (instead of 32)
+    wire [15:0] ext_act;
+    assign ext_act = {{8{ui_in[7]}}, ui_in};
 
-    // 3. Main 32-bit internal math register
-    reg [31:0] accum_out;
+    // 2. Scale internal math register to an optimized 16-bit width
+    reg [15:0] accum_out;
 
-    // 4. Pipe out the top 8 bits to the physical output pin bus
-    assign uo_out = accum_out[31:24];
+    // 3. Pipe out the top 8 bits (bits 15:8) to the output pins
+    assign uo_out = accum_out[15:8];
 
-    // Safe default values for unused bidirectional pins
     assign uio_out = 8'b00000000;
     assign uio_oe  = 8'b00000000;
 
-    // 5. Multiplexer-driven math logic block
     always @(posedge clk or posedge alu_reset) begin
         if (alu_reset) begin
-            accum_out <= 32'h00000000;
+            accum_out <= 16'h0000;
         end else begin
             if (uio_in[1:0] == 2'b01) begin
                 accum_out <= accum_out + ext_act; // Weight = +1
             end else if (uio_in[1:0] == 2'b10) begin
                 accum_out <= accum_out - ext_act; // Weight = -1
             end else begin
-                accum_out <= accum_out;           // Weight = 0 (Do nothing)
+                accum_out <= accum_out;           // Weight = 0
             end
         end
     end
