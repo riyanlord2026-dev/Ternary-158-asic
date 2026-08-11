@@ -6,7 +6,7 @@ project:
   description:  "A multiplier-less ternary AI core processing unit."
   language:     "Verilog"
   clock_hz:     10000000
-  tiles:        "1x2"
+  tiles:        "1x1"
   top_module:   "tt_um_riyanlord2026_dev_ternary_158"
   source_files:
     - "project.v"
