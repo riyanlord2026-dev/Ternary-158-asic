@@ -22,36 +22,39 @@ project:
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
+
+# The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
+# This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
-  # Inputs
-  ui[0]: ""
-  ui[1]: ""
-  ui[2]: ""
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  # Inputs (Your 8-bit image pixel / activation value lines)
+  ui[0]: "activation_0"
+  ui[1]: "activation_1"
+  ui[2]: "activation_2"
+  ui[3]: "activation_3"
+  ui[4]: "activation_4"
+  ui[5]: "activation_5"
+  ui[6]: "activation_6"
+  ui[7]: "activation_7"
 
-  # Outputs
-  uo[0]: ""
-  uo[1]: ""
-  uo[2]: ""
-  uo[3]: ""
-  uo[4]: ""
-  uo[5]: ""
-  uo[6]: ""
-  uo[7]: ""
+  # Outputs (The top 8 bits of your 32-bit internal math tally)
+  uo[0]: "accum_out_24"
+  uo[1]: "accum_out_25"
+  uo[2]: "accum_out_26"
+  uo[3]: "accum_out_27"
+  uo[4]: "accum_out_28"
+  uo[5]: "accum_out_29"
+  uo[6]: "accum_out_30"
+  uo[7]: "accum_out_31"
 
-  # Bidirectional pins
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
-  uio[7]: ""
+  # Bidirectional pins (Pins 0 and 1 take your 2-bit ternary weight)
+  uio[0]: "weight_0"
+  uio[1]: "weight_1"
+  uio[2]: "unused_2"
+  uio[3]: "unused_3"
+  uio[4]: "unused_4"
+  uio[5]: "unused_5"
+  uio[6]: "unused_6"
+  uio[7]: "unused_7"
 
 # Do not change!
 yaml_version: 6
