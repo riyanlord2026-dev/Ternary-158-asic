@@ -11,6 +11,7 @@ project:
   source_files:
     - "src/project.v"
 
+# Pinout mapping array strings
 pinout:
   ui[0]: "activation_0"
   ui[1]: "activation_1"
@@ -20,7 +21,6 @@ pinout:
   ui[5]: "activation_5"
   ui[6]: "activation_6"
   ui[7]: "activation_7"
-
   uo[0]: "accum_out_24"
   uo[1]: "accum_out_25"
   uo[2]: "accum_out_26"
@@ -29,15 +29,13 @@ pinout:
   uo[5]: "accum_out_29"
   uo[6]: "accum_out_30"
   uo[7]: "accum_out_31"
-
   uio[0]: "weight_0"
   uio[1]: "weight_1"
   uio[2]: "unused_2"
-  uio[3]: "unused_3"
+  uio[3]: "unused_4"
   uio[4]: "unused_4"
   uio[5]: "unused_5"
   uio[6]: "unused_6"
   uio[7]: "unused_7"
 
 yaml_version: 6
-# Wake up compiler run 5
