@@ -6,20 +6,13 @@ project:
   description:  "A multiplier-less ternary AI core processing unit."
   language:     "Verilog"
   clock_hz:     10000000
-
-  # How many tiles your design occupies?
-  tiles: "1x1"
-
-  # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
-
-  # List your project's source files here.
+  tiles:        "1x1"
+  top_module:   "tt_um_example"
   source_files:
     - "project.v"
 
-# The pinout of your project. Use descriptive names as a sequential list of 8 items.
+# The pinout list configuration map
 pinout:
-  # Inputs (Your 8-bit image pixel / activation value lines)
   ui:
     - "activation_0"
     - "activation_1"
@@ -29,8 +22,6 @@ pinout:
     - "activation_5"
     - "activation_6"
     - "activation_7"
-
-  # Outputs (The top 8 bits of your 32-bit internal math tally)
   uo:
     - "accum_out_24"
     - "accum_out_25"
@@ -40,8 +31,6 @@ pinout:
     - "accum_out_29"
     - "accum_out_30"
     - "accum_out_31"
-
-  # Bidirectional pins (Pins 0 and 1 take your 2-bit ternary weight)
   uio:
     - "weight_0"
     - "weight_1"
@@ -52,5 +41,4 @@ pinout:
     - "unused_6"
     - "unused_7"
 
-# Do not change!
 yaml_version: 6
