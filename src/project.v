@@ -1,48 +1,83 @@
 `default_nettype none
 
 module tt_um_example (
-    input  wire [7:0] ui_in,    // Dedicated inputs (Your 8-bit Activations)
-    output wire [7:0] uo_out,   // Dedicated outputs (Top 8 bits of Accumulator)
-    input  wire [7:0] uio_in,   // IO Pads: Input path (uio_in[1:0] is Weight)
-    output wire [7:0] uio_out,  // IO Pads: Output path
-    output wire [7:0] uio_oe,   // IO Pads: Enable path
-    input  wire       ena,      // Always 1 when design is powered
-    input  wire       clk,      // System clock
-    input  wire       rst_n     // Active-low reset from factory
+    input  wire [7:0] ui_in,    // Dedicated inputs (your activation values)
+    output wire [7:0] uo_out,   // Dedicated outputs (accumulator bits)
+    input  wire [7:0] uio_in,   // Bidirectional pins (includes weights)
+    output wire [7:0] uio_out,  // Bidirectional outputs
+    output wire [7:0] uio_oe,   // Output enable for bidirectional pins
+    input  wire       ena,      // Always 1 when module is powered
+    input  wire       clk,      // Clock
+    input  wire       rst_n     // Reset (active low)
 );
 
-    // 1. Convert active-low reset to active-high internal reset
-    wire alu_reset;
-    assign alu_reset = !rst_n;
+    // -----------------------------------------------------------------
+    // WIRE ASSIGNMENTS: Mapping your ALU to the physical outer chip pins
+    // -----------------------------------------------------------------
+    
+    // Invert the factory active-low reset (rst_n) to match your ALU active-high logic
+    wire alu_reset = !rst_n;
 
-    // 2. Correct Sign Extension targeting the 7th bit of ui_in explicitly
-    wire [31:0] ext_act;
-    assign ext_act = {{24{ui_in[7]}}, ui_in};
+    // Capture the 8 physical input pins for your 8-bit image pixels (activations)
+    wire [7:0] alu_activation = ui_in;
 
-    // 3. Main 32-bit internal math register
-    reg [31:0] accum_out;
+    // Allocate the first two bidirectional pins to take your 2-bit weight input (-1, 0, +1)
+    wire [1:0] alu_weight = uio_in[1:0];
 
-    // 4. Pipe out the top 8 bits to the physical output pin bus
-    assign uo_out = accum_out[31:24];
+    // Pipe out the top 8 bits of your 32-bit internal accumulation state to uo_out
+    wire [31:0] alu_accum_out;
+    assign uo_out = alu_accum_out[31:24];
 
-    // Safe default values for unused bidirectional pins
+    // Safe configuration for unused bidirectional lines
     assign uio_out = 8'b00000000;
     assign uio_oe  = 8'b00000000;
 
-    // 5. Multiplexer-driven math logic block
-    always @(posedge clk or posedge alu_reset) begin
-        if (alu_reset) begin
-            accum_out <= 32'h00000000;
-        end else begin
-            if (uio_in[1:0] == 2'b01) begin
-                accum_out <= accum_out + ext_act; // Weight = +1
-            end else if (uio_in[1:0] == 2'b10) begin
-                accum_out <= accum_out - ext_act; // Weight = -1
-            end else begin
-                accum_out <= accum_out;           // Weight = 0 (Do nothing)
-            end
-        end
-    end
+    // -----------------------------------------------------------------
+    // INSTANTIATION: Injecting your Ternary Engine into the Silicon Wrapper
+    // -----------------------------------------------------------------
+    Ternary_PE_Cell my_ternary_core (
+        .clk(clk),
+        .reset(alu_reset),
+        .activation(alu_activation),
+        .weight(alu_weight),
+        .accum_in(32'h00000000), // Hardwired baseline initialization
+        .accum_out(alu_accum_out)
+    );
 
 endmodule
-//Wipe corruption and do any fixes you need to get this to work
+
+// =====================================================================
+// YOUR VERIFIED TERNARY PROCESSING ELEMENT LOGIC
+// =====================================================================
+module Ternary_PE_Cell (
+    clk, reset, activation, weight, accum_in, accum_out
+);
+    input         clk;
+    input         reset;
+    input  [7:0]  activation;
+    input  [1:0]  weight;
+    input  [31:0] accum_in;
+    output [31:0] accum_out;
+
+    wire         clk;
+    wire         reset;
+    wire [7:0]   activation;
+    wire [1:0]   weight;
+    wire [31:0]  accum_in;
+    reg  [31:0]  accum_out;
+
+    wire [31:0] ext_act;
+    assign ext_act = {{24{activation[7]}}, activation};
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            accum_out <= 32'h00000000;
+        end else begin
+            case (weight)
+                2'b01:   begin accum_out <= accum_in + ext_act; end
+                2'b10:   begin accum_out <= accum_in - ext_act; end
+                default: begin accum_out <= accum_in; end
+            endcase
+        end
+    end
+endmodule
