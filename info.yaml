@@ -40,3 +40,4 @@ pinout:
   uio[7]: "unused_7"
 
 yaml_version: 6
+# Wake up compiler run 5
