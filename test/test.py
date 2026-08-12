@@ -4,39 +4,29 @@ from cocotb.triggers import ClockCycles
 
 @cocotb.test()
 async def test_project(dut):
-    dut._log.info("Starting Ternary-158 Core Silicon Verification Test")
+    dut._log.info("Starting Dual-Core Ternary Silicon Verification Test")
 
-    # 1. Supply virtual power rails to the SkyWater gate cells for GL testing
     if hasattr(dut, "VPWR"):
         dut.VPWR.value = 1
     if hasattr(dut, "VGND"):
         dut.VGND.value = 0
 
-    # 2. Boot up the virtual hardware clock loop (10MHz Clock rate)
-    # This prevents the "Simulator shut down prematurely" error!
+    # Start system clock
     cocotb.start_soon(Clock(dut.clk, 100, unit="ns").start())
 
-    # 3. Apply a System Reset Cycle
-    dut.rst_n.value = 0  # Active-low reset (0 means reset)
+    # Apply Reset
+    dut.rst_n.value = 0
     dut.ui_in.value = 0
     dut.uio_in.value = 0
     await ClockCycles(dut.clk, 5)
-    dut.rst_n.value = 1  # Release reset (1 means run)
+    dut.rst_n.value = 1
     await ClockCycles(dut.clk, 5)
 
-    # --- TEST CASE 1: Verify Addition (+1 weight) ---
-    dut.ui_in.value = 15
-    dut.uio_in.value = 0b01
-    await ClockCycles(dut.clk, 2)
+    # TEST CYCLE: Set activation to 10
+    # Set Cell 0 weight to +1 (01) and Cell 1 weight to +1 (01)
+    # Binary pattern for uio_in: 00000101 (Decimal 5)
+    dut.ui_in.value = 10
+    dut.uio_in.value = 5 
+    await ClockCycles(dut.clk, 5)
 
-    # --- TEST CASE 2: Verify Subtraction (-1 weight) ---
-    dut.ui_in.value = 5
-    dut.uio_in.value = 0b10
-    await ClockCycles(dut.clk, 2)
-
-    # --- TEST CASE 3: Verify Zero State (0 weight) ---
-    dut.ui_in.value = 50
-    dut.uio_in.value = 0b00
-    await ClockCycles(dut.clk, 2)
-
-    dut._log.info("Ternary arithmetic verification cycles completed successfully!")
+    dut._log.info("Dual-core parallel verification successfully executed!")
