@@ -20,7 +20,7 @@ module tt_um_riyanlord2026_dev_ternary_158 (
     assign ext_act = {{24{ui_in[7]}}, ui_in};
 
     // 2. Extract weights for Row 0 and Row 1 from the incoming pin streams
-    // Each row reads 4 separate 1-bit binary weights to save pin space!
+    // Each row reads 4 separate 1-bit binary weights from the 8-bit bus
     // 1'b1 means Weight = +1, 1'b0 means Weight = -1
     wire w0 = uio_in[0]; wire w1 = uio_in[1]; wire w2 = uio_in[2]; wire w3 = uio_in[3];
     wire w4 = uio_in[4]; wire w5 = uio_in[5]; wire w6 = uio_in[6]; wire w7 = uio_in[7];
